@@ -1,4 +1,6 @@
 #!/bin/bash
+
+#Gets the shell's set flags
 iatest=$(expr index "$-" i)
 
 #######################################################
@@ -49,17 +51,13 @@ if [[ $iatest > 0 ]]; then bind "set completion-ignore-case on"; fi
 if [[ $iatest > 0 ]]; then bind "set show-all-if-ambiguous On"; fi
 
 # Set the default editor
-export EDITOR=nano
-export VISUAL=nano
-alias pico='edit'
-alias spico='sedit'
-alias nano='edit'
-alias snano='sedit'
+export EDITOR=emacs
+export VISUAL=emacs
 
 # To have colors for ls and all grep commands such as grep, egrep and zgrep
 export CLICOLOR=1
 export LS_COLORS='no=00:fi=00:di=00;34:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.avi=01;35:*.fli=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.ogg=01;35:*.mp3=01;35:*.wav=01;35:*.xml=00;31:'
-export GREP_OPTIONS='--color=auto'
+
 
 # Color for manpages in less makes manpages a little easier to read
 export LESS_TERMCAP_mb=$'\E[01;31m'
@@ -78,7 +76,7 @@ export LESS_TERMCAP_us=$'\E[01;32m'
 # alias SERVERNAME='ssh YOURWEBSITE.com -l USERNAME -p PORTNUMBERHERE'
 
 # Alias's to change the directory
-alias web='cd /var/www/html'
+# alias web='cd /var/www/html'
 
 # Alias's to mount ISO files
 # mount -o loop /home/NAMEOFISO.iso /home/ISOMOUNTDIR/
@@ -105,20 +103,13 @@ alias hlp='less ~/.bashrc_help'
 alias da='date "+%Y-%m-%d %A %T %Z"'
 
 # Alias's to modified commands
-alias cp='cp -i'
-alias mv='mv -i'
-alias rm='rm -iv'
-alias mkdir='mkdir -p'
-alias ps='ps auxf'
-alias ping='ping -c 10'
-alias less='less -R'
-alias cls='clear'
-alias apt-get='sudo apt-get'
-alias multitail='multitail --no-repeat -c'
-alias freshclam='sudo freshclam'
-alias vi='vim'
-alias svi='sudo vi'
-alias vis='vim "+set si"'
+alias cp='cp -p' # --preserve=mode,ownership,timestamps
+alias mkdir='mkdir -p' # create any needed parent dirctorys too
+alias ps='ps -He' # parent chiled higherarcy, all process
+alias ping='ping -c 10' # ping 10 times then stop
+alias less='less -R'  
+# alias apt-get='sudo apt-get'
+# alias multitail='multitail --no-repeat -c'
 
 # Change directory aliases
 alias home='cd ~'
@@ -132,12 +123,15 @@ alias .....='cd ../../../..'
 alias bd='cd "$OLDPWD"'
 
 # Remove a directory and all files
-alias rmd='/bin/rm  --recursive --force --verbose '
+alias rmd='rm  --recursive --force --verbose '
+
+# Alias for colorized grep
+alias grep='grep --color=auto'
 
 # Alias's for multiple directory listing commands
 alias la='ls -Alh' # show hidden files
 alias ls='ls -aFh --color=always' # add colors and file type extensions
-alias lx='ls -lXBh' # sort by extension
+alias l.='ls -lXBh' # sort by extension
 alias lk='ls -lSrh' # sort by size
 alias lc='ls -lcrh' # sort by change time
 alias lu='ls -lurh' # sort by access time
@@ -151,12 +145,14 @@ alias lf="ls -l | egrep -v '^d'" # files only
 alias ldir="ls -l | egrep '^d'" # directories only
 
 # alias chmod commands
-alias mx='chmod a+x'
-alias 000='chmod -R 000'
-alias 644='chmod -R 644'
-alias 666='chmod -R 666'
-alias 755='chmod -R 755'
-alias 777='chmod -R 777'
+alias mx='chmod a+x' # make the file, universily, excutable
+alias 000='chmod -R 000' # no read, write, or excute for anyone
+alias 644='chmod -R 644' # read for anyone, user can write 
+alias 666='chmod -R 666' # read, write for all
+alias 755='chmod -R 755' # read, and excute for all. user can write
+alias 777='chmod -R 777' # read,write, and exacute for anyone
+
+
 
 # Search command line history
 alias h="history | grep "
@@ -193,6 +189,8 @@ alias treed='tree -CAFd'
 alias mountedinfo='df -hT'
 
 # Alias's for archives
+
+
 alias mktar='tar -cvf'
 alias mkbz2='tar -cvjf'
 alias mkgz='tar -cvzf'
@@ -204,39 +202,11 @@ alias ungz='tar -xvzf'
 alias logs="sudo find /var/log -type f -exec file {} \; | grep 'text' | cut -d' ' -f1 | sed -e's/:$//g' | grep -v '[0-9]$' | xargs tail -f"
 
 # SHA1
-alias sha1='openssl sha1'
+# alias sha1='openssl sha1'      
 
 #######################################################
 # SPECIAL FUNCTIONS
 #######################################################
-
-# Use the best version of pico installed
-edit ()
-{
-	if [ "$(type -t jpico)" = "file" ]; then
-		# Use JOE text editor http://joe-editor.sourceforge.net/
-		jpico -nonotice -linums -nobackups "$@"
-	elif [ "$(type -t nano)" = "file" ]; then
-		nano -c "$@"
-	elif [ "$(type -t pico)" = "file" ]; then
-		pico "$@"
-	else
-		vim "$@"
-	fi
-}
-sedit ()
-{
-	if [ "$(type -t jpico)" = "file" ]; then
-		# Use JOE text editor http://joe-editor.sourceforge.net/
-		sudo jpico -nonotice -linums -nobackups "$@"
-	elif [ "$(type -t nano)" = "file" ]; then
-		sudo nano -c "$@"
-	elif [ "$(type -t pico)" = "file" ]; then
-		sudo pico "$@"
-	else
-		sudo vim "$@"
-	fi
-}
 
 # Extracts any archive(s) (if unp isn't installed)
 extract () {
@@ -263,7 +233,7 @@ extract () {
 }
 
 # Searches for text in all files in the current folder
-ftext ()
+grepall ()
 {
 	# -i case-insensitive
 	# -I ignore binary files
@@ -340,123 +310,125 @@ up ()
 }
 
 #Automatically do an ls after each cd
-# cd ()
+cd ()
+{
+	if [ -n "$1" ]; then
+		builtin cd "$@" && ls
+	else
+		builtin cd ~ && ls
+	fi
+
+}
+
+# # Returns the last 2 fields of the working directory
+# pwdtail ()
 # {
-# 	if [ -n "$1" ]; then
-# 		builtin cd "$@" && ls
-# 	else
-# 		builtin cd ~ && ls
-# 	fi
+# 	pwd|awk -F/ '{nlast = NF -1;print $nlast"/"$NF}'
 # }
 
-# Returns the last 2 fields of the working directory
-pwdtail ()
-{
-	pwd|awk -F/ '{nlast = NF -1;print $nlast"/"$NF}'
-}
-
-# Show the current distribution
-distribution ()
-{
-	local dtype
-	# Assume unknown
-	dtype="unknown"
+# # Show the current distribution
+# distribution ()
+# {
+# 	local dtype
+# 	# Assume unknown
+# 	dtype="unknown"
 	
-	# First test against Fedora / RHEL / CentOS / generic Redhat derivative
-	if [ -r /etc/rc.d/init.d/functions ]; then
-		source /etc/rc.d/init.d/functions
-		[ zz`type -t passed 2>/dev/null` == "zzfunction" ] && dtype="redhat"
+# 	# First test against Fedora / RHEL / CentOS / generic Redhat derivative
+# 	if [ -r /etc/rc.d/init.d/functions ]; then
+# 		source /etc/rc.d/init.d/functions
+# 		[ zz`type -t passed 2>/dev/null` == "zzfunction" ] && dtype="redhat"
 	
-	# Then test against SUSE (must be after Redhat,
-	# I've seen rc.status on Ubuntu I think? TODO: Recheck that)
-	elif [ -r /etc/rc.status ]; then
-		source /etc/rc.status
-		[ zz`type -t rc_reset 2>/dev/null` == "zzfunction" ] && dtype="suse"
+# 	# Then test against SUSE (must be after Redhat,
+# 	# I've seen rc.status on Ubuntu I think? TODO: Recheck that)
+# 	elif [ -r /etc/rc.status ]; then
+# 		source /etc/rc.status
+# 		[ zz`type -t rc_reset 2>/dev/null` == "zzfunction" ] && dtype="suse"
 	
-	# Then test against Debian, Ubuntu and friends
-	elif [ -r /lib/lsb/init-functions ]; then
-		source /lib/lsb/init-functions
-		[ zz`type -t log_begin_msg 2>/dev/null` == "zzfunction" ] && dtype="debian"
+# 	# Then test against Debian, Ubuntu and friends
+# 	elif [ -r /lib/lsb/init-functions ]; then
+# 		source /lib/lsb/init-functions
+# 		[ zz`type -t log_begin_msg 2>/dev/null` == "zzfunction" ] && dtype="debian"
 	
-	# Then test against Gentoo
-	elif [ -r /etc/init.d/functions.sh ]; then
-		source /etc/init.d/functions.sh
-		[ zz`type -t ebegin 2>/dev/null` == "zzfunction" ] && dtype="gentoo"
+# 	# Then test against Gentoo
+# 	elif [ -r /etc/init.d/functions.sh ]; then
+# 		source /etc/init.d/functions.sh
+# 		[ zz`type -t ebegin 2>/dev/null` == "zzfunction" ] && dtype="gentoo"
 	
-	# For Mandriva we currently just test if /etc/mandriva-release exists
-	# and isn't empty (TODO: Find a better way :)
-	elif [ -s /etc/mandriva-release ]; then
-		dtype="mandriva"
+# 	# For Mandriva we currently just test if /etc/mandriva-release exists
+# 	# and isn't empty (TODO: Find a better way :)
+# 	elif [ -s /etc/mandriva-release ]; then
+# 		dtype="mandriva"
 
-	# For Slackware we currently just test if /etc/slackware-version exists
-	elif [ -s /etc/slackware-version ]; then
-		dtype="slackware"
+# 	# For Slackware we currently just test if /etc/slackware-version exists
+# 	elif [ -s /etc/slackware-version ]; then
+# 		dtype="slackware"
 
-	fi
-	echo $dtype
-}
+# 	fi
+# 	echo $dtype
+# }
 
-# Show the current version of the operating system
-ver ()
-{
-	local dtype
-	dtype=$(distribution)
+# # Show the current version of the operating system
+# ver ()
+# {
+# 	local dtype
+# 	dtype=$(distribution)
 
-	if [ $dtype == "redhat" ]; then
-		if [ -s /etc/redhat-release ]; then
-			cat /etc/redhat-release && uname -a
-		else
-			cat /etc/issue && uname -a
-		fi
-	elif [ $dtype == "suse" ]; then
-		cat /etc/SuSE-release
-	elif [ $dtype == "debian" ]; then
-		lsb_release -a
-		# sudo cat /etc/issue && sudo cat /etc/issue.net && sudo cat /etc/lsb_release && sudo cat /etc/os-release # Linux Mint option 2
-	elif [ $dtype == "gentoo" ]; then
-		cat /etc/gentoo-release
-	elif [ $dtype == "mandriva" ]; then
-		cat /etc/mandriva-release
-	elif [ $dtype == "slackware" ]; then
-		cat /etc/slackware-version
-	else
-		if [ -s /etc/issue ]; then
-			cat /etc/issue
-		else
-			echo "Error: Unknown distribution"
-			exit 1
-		fi
-	fi
-}
+# 	if [ $dtype == "redhat" ]; then
+# 		if [ -s /etc/redhat-release ]; then
+# 			cat /etc/redhat-release && uname -a
+# 		else
+# 			cat /etc/issue && uname -a
+# 		fi
+# 	elif [ $dtype == "suse" ]; then
+# 		cat /etc/SuSE-release
+# 	elif [ $dtype == "debian" ]; then
+# 		lsb_release -a
+# 		# sudo cat /etc/issue && sudo cat /etc/issue.net && sudo cat /etc/lsb_release && sudo cat /etc/os-release # Linux Mint option 2
+# 	elif [ $dtype == "gentoo" ]; then
+# 		cat /etc/gentoo-release
+# 	elif [ $dtype == "mandriva" ]; then
+# 		cat /etc/mandriva-release
+# 	elif [ $dtype == "slackware" ]; then
+# 		cat /etc/slackware-version
+# 	else
+# 		if [ -s /etc/issue ]; then
+# 			cat /etc/issue
+# 		else
+# 			echo "Error: Unknown distribution"
+# 			exit 1
+# 		fi
+# 	fi
+# }
 
 # Automatically install the needed support files for this .bashrc file
 install_bashrc_support ()
 {
-	local dtype
-	dtype=$(distribution)
+    sudo apt-get multitail tree joe
+#         local dtype
+# 	dtype=$(distribution)
 
-	if [ $dtype == "redhat" ]; then
-		sudo yum install multitail tree joe
-	elif [ $dtype == "suse" ]; then
-		sudo zypper install multitail
-		sudo zypper install tree
-		sudo zypper install joe
-	elif [ $dtype == "debian" ]; then
-		sudo apt-get install multitail tree joe
-	elif [ $dtype == "gentoo" ]; then
-		sudo emerge multitail
-		sudo emerge tree
-		sudo emerge joe
-	elif [ $dtype == "mandriva" ]; then
-		sudo urpmi multitail
-		sudo urpmi tree
-		sudo urpmi joe
-	elif [ $dtype == "slackware" ]; then
-		echo "No install support for Slackware"
-	else
-		echo "Unknown distribution"
-	fi
-}
+# 	if [ $dtype == "redhat" ]; then
+# 		sudo yum install multitail tree joe
+# 	elif [ $dtype == "suse" ]; then
+# 		sudo zypper install multitail
+# 		sudo zypper install tree
+# 		sudo zypper install joe
+# 	elif [ $dtype == "debian" ]; then
+# 		sudo apt-get install multitail tree joe
+# 	elif [ $dtype == "gentoo" ]; then
+# 		sudo emerge multitail
+# 		sudo emerge tree
+# 		sudo emerge joe
+# 	elif [ $dtype == "mandriva" ]; then
+# 		sudo urpmi multitail
+# 		sudo urpmi tree
+# 		sudo urpmi joe
+# 	elif [ $dtype == "slackware" ]; then
+# 		echo "No install support for Slackware"
+# 	else
+# 		echo "Unknown distribution"
+# 	fi
+ }
 
 # Show current network information
 netinfo ()
@@ -483,7 +455,7 @@ function whatsmyip ()
 	echo -n "Internal IP: " ; /sbin/ifconfig eth0 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'
 
 	# External IP Lookup
-	echo -n "External IP: " ; wget http://smart-ip.net/myip -O - -q
+	echo -n "External IP: " ; wget http://smart-ip.net/myip -O - -q # '-O' don't save file, cat it to '-' ie sdout. and do it all quiatly '-q'
 }
 
 # View Apache logs
@@ -504,9 +476,9 @@ apacheconfig ()
 	elif [ -f /etc/apache2/apache2.conf ]; then
 		sedit /etc/apache2/apache2.conf
 	else
-		echo "Error: Apache config file could not be found."
-		echo "Searching for possible locations:"
-		sudo updatedb && locate httpd.conf && locate apache2.conf
+		echo "Error: Apache config file could not be found." 
+		# echo "Searching for possible locations:" 
+		# sudo updatedb && locate httpd.conf && locate apache2.conf
 	fi
 }
 
@@ -525,8 +497,8 @@ phpconfig ()
 		sedit /etc/php5/apache2/php.ini
 	else
 		echo "Error: php.ini file could not be found."
-		echo "Searching for possible locations:"
-		sudo updatedb && locate php.ini
+		# echo "Searching for possible locations:"
+		# sudo updatedb && locate php.ini
 	fi
 }
 
@@ -547,19 +519,19 @@ mysqlconfig ()
 		sedit ~/.my.cnf
 	else
 		echo "Error: my.cnf file could not be found."
-		echo "Searching for possible locations:"
-		sudo updatedb && locate my.cnf
+		# echo "Searching for possible locations:"
+		# sudo updatedb && locate my.cnf
 	fi
 }
 
-# For some reason, rot13 pops up everywhere
-rot13 () {
-	if [ $# -eq 0 ]; then
-		tr '[a-m][n-z][A-M][N-Z]' '[n-z][a-m][N-Z][A-M]'
-	else
-		echo $* | tr '[a-m][n-z][A-M][N-Z]' '[n-z][a-m][N-Z][A-M]'
-	fi
-}
+# # For some reason, rot13 pops up everywhere
+# rot13 () {
+# 	if [ $# -eq 0 ]; then
+# 		tr '[a-m][n-z][A-M][N-Z]' '[n-z][a-m][N-Z][A-M]'
+# 	else
+# 		echo $* | tr '[a-m][n-z][A-M][N-Z]' '[n-z][a-m][N-Z][A-M]'
+# 	fi
+# }
 
 # Trim leading and trailing spaces (for scripts)
 trim()
@@ -650,10 +622,10 @@ function __setprompt
 	# Jobs
 	PS1+="\[${DARKGRAY}\]:\[${MAGENTA}\]\j"
 
-	# Network Connections (for a server - comment out for non-server)
-	PS1+="\[${DARKGRAY}\]:\[${MAGENTA}\]Net $(awk 'END {print NR}' /proc/net/tcp)"
+	# # Network Connections (for a server - comment out for non-server)
+	# PS1+="\[${DARKGRAY}\]:\[${MAGENTA}\]Net $(awk 'END {print NR}' /proc/net/tcp)"
 
-	PS1+="\[${DARKGRAY}\])-"
+	# PS1+="\[${DARKGRAY}\])-"
 
 	# User and server
 	local SSH_IP=`echo $SSH_CLIENT | awk '{ print $1 }'`
