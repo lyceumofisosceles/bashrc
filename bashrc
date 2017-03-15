@@ -130,7 +130,7 @@ alias grep='grep --color=auto'
 
 # Alias's for multiple directory listing commands
 alias la='ls -Alh' # show hidden files
-alias ls='ls -aFh --color=always' # add colors and file type extensions
+alias ls='ls -Fh --color=always' # add colors and file type extensions
 alias l.='ls -lXBh' # sort by extension
 alias lk='ls -lSrh' # sort by size
 alias lc='ls -lcrh' # sort by change time
@@ -403,7 +403,7 @@ cd ()
 # Automatically install the needed support files for this .bashrc file
 install_bashrc_support ()
 {
-    sudo apt-get multitail tree joe
+    apt-get multitail tree joe
 #         local dtype
 # 	dtype=$(distribution)
 
