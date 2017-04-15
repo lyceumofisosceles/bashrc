@@ -664,3 +664,4 @@ function __setprompt
 	PS4='\[${DARKGRAY}\]+\[${NOCOLOR}\] '
 }
 PROMPT_COMMAND='__setprompt'
+if [ /dev/tty1 = `tty` ] ;then exec emacs -f shell; fi
